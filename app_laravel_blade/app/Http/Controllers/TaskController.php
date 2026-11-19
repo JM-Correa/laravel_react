@@ -26,12 +26,20 @@ class TaskController extends Controller
     }
 
     // POST /api/tasks
-    public function store(StoreTaskRequest $request): JsonResponse
-    {
-        $task = Task::create($request->validated());
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'completed' => 'boolean',
+    ]);
 
-        return response()->json($task, 201);
-    }
+    Task::create($validated);
+
+    return redirect()
+        ->route('tasks.index')
+        ->with('success', 'Tarea creada correctamente.');
+}
 
     // GET /api/tasks/{task}
     public function show(Task $task): JsonResponse
@@ -40,12 +48,24 @@ class TaskController extends Controller
     }
 
     // PUT /api/tasks/{task}
-    public function update(UpdateTaskRequest $request, Task $task): JsonResponse
-    {
-        $task->update($request->validated());
+    public function update(UpdateTaskRequest $request, Task $task): JsonResponse|RedirectResponse
+{
+    $data = $request->validated();
 
+    if ($request->has('estatus')) {
+        $data['estatus'] = $request->boolean('estatus');
+    }
+
+    $task->update($data);
+
+    if ($request->wantsJson()) {
         return response()->json($task);
     }
+
+    return redirect()
+        ->route('tasks.index')
+        ->with('success', 'Tarea actualizada correctamente.');
+}
 
     // DELETE /api/tasks/{task}
     public function destroy(Task $task): Response

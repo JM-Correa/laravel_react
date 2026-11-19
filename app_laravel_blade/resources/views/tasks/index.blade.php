@@ -43,17 +43,19 @@
                         
                         {{-- Checkbox para marcar/desmarcar --}}
                         <form action="{{ route('tasks.update', $task->idtask) }}" method="POST" class="mt-1">
-                            @csrf
-                            @method('PUT')
-                            <input type="hidden" name="toggle_estatus" value="1">
-                            <input
-                                type="checkbox"
-                                onchange="this.form.submit()"
-                                {{ $task->estatus ? 'checked' : '' }}
-                                aria-label="Marcar como completada"
-                                class="h-4 w-4 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-900"
-                            >
-                        </form>
+    @csrf
+    @method('PUT')
+    <input type="hidden" name="estatus" value="0">
+    <input
+        type="checkbox"
+        name="estatus"
+        value="1"
+        onchange="this.form.submit()"
+        {{ $task->estatus ? 'checked' : '' }}
+        aria-label="Marcar como completada"
+        class="h-4 w-4 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-900"
+    >
+</form>
 
                         {{-- Nombre y Detalle --}}
                         <div class="min-w-0 flex-1">
